@@ -1,34 +1,21 @@
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
+public class Job implements Runnable {
+	private int jobNumber;
 
-public class ThreadPoolApp {
- 	public static void main (String [] args) {
- 		if (args.length < 2)
- 			ThreadPoolApp.error();
- 		try {
- 			int numberOfJobs = Integer.parseInt(args[0]);
- 			int numberOfThreads = Integer.parseInt(args[1]);
- 			if ((numberOfJobs < 1) || (numberOfThreads < 1))
- 				ThreadPoolApp.error();
- 			ExecutorService pool = Executors.newFixedThreadPool(numberOfThreads);
+ 	Job (int jobNumber) {
+ 		this.jobNumber = jobNumber;
+ 	}
 
- 			Job [] jobs = new Job [numberOfJobs];
- 			for (int i = 0; i < numberOfJobs; i++) {
- 				jobs[i] = new Job (i);
- 				pool.execute(jobs[i]);//executes the command at future time.
- 			}
- 			pool.shutdown();//Shutdown : previously submitted tasks are executed, 
- 					   // but no new tasks will be accepted.
- 			System.out.println ("Last line " + Thread.currentThread().getName());
- 		} catch (NumberFormatException e) {
- 			ThreadPoolApp.error();
-		}
-   	}
+ 	public void run () {
+ 	// Undertake required work, here we will emulate it by sleeping for a period
+	 System.out.println ("Job: " + jobNumber + " is being processed by thread : "
+ 		+ Thread.currentThread ().getName());
+ 	try {
+ 		Thread.sleep((int)(1000));
+ 	} catch (InterruptedException e) {
+ 		// no catching as example should not experience interruptions
+ 	}
+ 	System.out.println("Job: " + jobNumber + " is ending in thread : "
+ 		+ Thread.currentThread().getName());
+   }
 
- 	private static void error() {
- 		System.out.println("ThreadPoolApp must be run with two positive valued " +
- 			" integer arguments. The first detailing the number of jobs " +
- 			" the second the number of processing threads in the pool");
- 		System.exit(0); // exit program
-	}
 }
